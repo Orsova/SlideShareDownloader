@@ -4,10 +4,10 @@ from PIL import Image
 import glob
 import natsort
 
-projectdirectory = "/Users/cyanotype/Desktop/Python/pythonProject/"
+projectdirectory = ""
 urllist = open("imglist.txt").readlines()
 
-imgurl = "https://image.slidesharecdn.com/latticeenergyllc-greenhard-radiation-freelenrscouldprovidegame-changingnuclearpowerformilitarycombat-190702231746/75/lattice-energy-llc-green-hardradiationfree-len-rs-could-provide-gamechanging-nuclear-power-for-military-combat-systems-july-2-2019-1-2048.jpg"
+imgurl = ""
 
 urlsplit = imgurl.split("-1-")
 
