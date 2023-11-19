@@ -4,8 +4,10 @@ from PIL import Image
 import glob
 import natsort
 
+# img url should be the first high resolution jpg in the image sequence
+
 projectdirectory = ""
-urllist = open("imglist.txt").readlines()
+# urllist = open("imglist.txt").readlines()
 
 imgurl = ""
 
