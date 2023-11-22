@@ -4,66 +4,94 @@ from PIL import Image
 import glob
 import natsort
 from bs4 import BeautifulSoup
+import csv
 
 #usersettings
 
-ssurl = requests.get("")
-projectdirectory = ""
+projectdirectory = "/Users/cyanotype/Desktop/Python/pythonProject/"
 
-#parse image url from slideshare url
+# open URL list
 
-soup = BeautifulSoup(ssurl.content)
-rawimgurla = soup.find('picture', attrs={'data-testid':'slide-image-picture'}).find("source")['srcset']
-rawimgurlb = rawimgurla.split(" ")[4]
-rawimgurlc = rawimgurlb.split("?")
-imgurl = rawimgurlc[0]
+with open('urls.csv', 'r') as fd:
+    reader = csv.reader(fd)
+    for row in reader:
 
-#split image url and download images
+        ssurlraw = row
+        ssurlraw2 = str(row)
+        ssurl = ssurlraw2.split("'")
 
-urlsplit = imgurl.split("-1-")
+        print (ssurl[1])
 
-for i in range(1,562):
-    url = urlsplit[0]+"-"+str(i)+"-"+urlsplit[1]
-    page = requests.get(url)
+        # parse image url from slideshare url
 
-    f_ext = os.path.splitext(url)[-1]
-    f_name = 'page{}{}'.format(i,f_ext)
-    with open(f_name, 'wb') as f:
-        f.write(page.content)
-    if page.status_code == 200:
-        print ("Downloading page: "+ str(i))
-    else:
-        print ("Ended.")
-        print ("Page "+str(i)+" empty. Deleting page.")
-        os.remove("./page"+str(i)+".jpg")
-        break
+        ssurlget = requests.get(ssurl[1])
+        print (ssurlget)
+        soup = BeautifulSoup(ssurlget.text, features="html.parser")
+        rawimgurla = soup.find('picture', attrs={'data-testid':'slide-image-picture'}).find("source")['srcset']
+        rawimgurlb = rawimgurla.split(" ")[4]
+        rawimgurlc = rawimgurlb.split("?")
+        imgurl = rawimgurlc[0]
 
-#combine images into PDF
+        # split image url and download images
 
-print ("Combining files...")
-files = glob.glob('*.jpg')
-print ("File names: "+str(files))
-print ("Sorting filenames.")
-sortedfiles = natsort.natsorted(files,reverse=False)
-print ("Sorted file names: "+str(sortedfiles))
-print ("Building PDF.")
+        urlsplit = imgurl.split("-1-")
 
-images = [
-    Image.open(projectdirectory + f)
-    for f in sortedfiles
-]
+        for i in range(1,562):
+            url = urlsplit[0]+"-"+str(i)+"-"+urlsplit[1]
+            page = requests.get(url)
 
-pdf_path = "./document.pdf"
+            f_ext = os.path.splitext(url)[-1]
+            f_name = 'page{}{}'.format(i,f_ext)
+            with open(f_name, 'wb') as f:
+                f.write(page.content)
+            if page.status_code == 200:
+                print ("Downloading page: "+ str(i))
+                print (url)
+            else:
+                print ("Ended.")
+                os.remove("./page"+str(i)+".jpg")
+                break
 
-images[0].save(
-    pdf_path, "PDF", resolution=100.0, save_all=True, append_images=images[1:]
-)
+        # combine images into PDF
 
-# delete JPG files
+        print ("Combining files...")
 
-print ("Deleting JPG files.")
+        files = glob.glob('*.jpg')
 
-for filename in glob.glob('./*.jpg'):
-    os.remove(filename)
+        print ("File names: "+str(files))
 
-print ("Done.")
+        print ("Sorting filenames.")
+
+        sortedfiles = natsort.natsorted(files,reverse=False)
+
+        print ("Sorted file names: "+str(sortedfiles))
+
+        print ("Building PDF.")
+
+        images = [
+            Image.open(projectdirectory + f)
+            for f in sortedfiles
+        ]
+
+        docname = str(ssurl[1])
+        docname2 = docname.split("/")
+        print (docname2[4])
+        docname3 = docname2[4]
+
+        pdf_path = "./"+docname3+".pdf"
+
+        images[0].save(
+            pdf_path, "PDF", resolution=100.0, save_all=True, append_images=images[1:]
+        )
+
+        # delete JPG files
+
+        print ("Deleting JPG files.")
+
+        for filename in glob.glob('./*.jpg'):
+            os.remove(filename)
+
+        print ("Done.")
+
+
+
