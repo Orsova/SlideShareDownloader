@@ -16,9 +16,8 @@ with open('urls.csv', 'r') as fd:
     reader = csv.reader(fd)
     for row in reader:
 
-        ssurlraw = row
-        ssurlraw2 = str(row)
-        ssurl = ssurlraw2.split("'")
+        ssurlraw = str(row)
+        ssurl = ssurlraw.split("'")
 
         print (ssurl[1])
 
