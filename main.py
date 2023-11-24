@@ -5,10 +5,11 @@ import glob
 import natsort
 from bs4 import BeautifulSoup
 import csv
+import ocrmypdf
 
 #usersettings
 
-projectdirectory = ""
+projectdirectory = "/Users/cyanotype/Desktop/Python/pythonProject/"
 
 # open URL list
 
@@ -34,9 +35,20 @@ with open('urls.csv', 'r') as fd:
         # split image url and download images
 
         urlsplit = imgurl.split("-1-")
+        print (imgurl)
 
         for i in range(1,562):
-            url = urlsplit[0]+"-"+str(i)+"-"+urlsplit[1]
+
+            url = urlsplit[0] + "-" + str(i) + "-" + urlsplit[1]
+
+            urlstatus = requests.get(url)
+
+            if urlstatus.status_code == 200:
+                print ("URL Fine.")
+            else:
+                print ("URL Adjusted.")
+                url = urlsplit[0] + "-" + urlsplit[1] + "-" + str(i) + "-" + urlsplit[2]
+
             page = requests.get(url)
 
             f_ext = os.path.splitext(url)[-1]
@@ -78,7 +90,6 @@ with open('urls.csv', 'r') as fd:
         docname3 = docname2[4]
 
         pdf_path = "./"+docname3+".pdf"
-
         images[0].save(
             pdf_path, "PDF", resolution=100.0, save_all=True, append_images=images[1:]
         )
@@ -90,7 +101,4 @@ with open('urls.csv', 'r') as fd:
         for filename in glob.glob('./*.jpg'):
             os.remove(filename)
 
-        print ("Done.")
-
-
-
+        print ("Document Finished.")
