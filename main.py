@@ -9,7 +9,7 @@ import ocrmypdf
 
 #usersettings
 
-projectdirectory = "/Users/cyanotype/Desktop/Python/pythonProject/"
+projectdirectory = ""
 
 # open URL list
 
