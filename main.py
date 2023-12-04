@@ -5,7 +5,6 @@ import glob
 import natsort
 from bs4 import BeautifulSoup
 import csv
-import ocrmypdf
 
 #usersettings
 
